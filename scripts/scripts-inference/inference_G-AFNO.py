@@ -54,7 +54,6 @@ gaussian_params={'k': 0.15}
 # In this notebook we assume that the 90 AFNO models (or a single illustrative model as example) are stored in the folder: workdir+'/models/'
 # In this notebook we assume that the era5 initial conditions are stored in the folder: workdir+'/data/era5/'
 #    where each file contains the 20 variables for a particular year, e.g., workdir+'/data/era5/2018.nc'
-# See Zenodo with data and model associated to this notebook:
 ################################################################################
 # Device
 torch.cuda.set_device(0)
@@ -62,7 +61,7 @@ torch.backends.cudnn.benchmark=True
 device=torch.cuda.current_device() if torch.cuda.is_available() else 'cpu'
 ##########################################
 # Neural weather model
-model=AFNONet(afno_params).to(device)
+model=AFNONet(afno_params).to(device) # code for this function is available at: Pathak, J., Subramanian, S., Harrington, P., Raja, S., Chattopadhyay, A., Mardani, M., ... & Anandkumar, A. (2022). Fourcastnet: A global data-driven high-resolution weather model using adaptive fourier neural operators. arXiv preprint arXiv:2202.11214.
 model=load_model(model=model, model_path='./models/'+nwm)
 model=model.to(device)
 ##########################################
