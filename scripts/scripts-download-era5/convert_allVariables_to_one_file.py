@@ -1,0 +1,45 @@
+################ LICENSE ######################################
+# This software is Copyright © 2024 The Regents of the University of California.
+# All Rights Reserved. Permission to copy, modify, and distribute this software and its documentation
+# for educational, research and non-profit purposes, without fee, and without a written agreement is
+# hereby granted, provided that the above copyright notice, this paragraph and the following three paragraphs
+# appear in all copies. Permission to make commercial use of this software may be obtained by contacting:
+#
+# Office of Innovation and Commercialization 9500 Gilman Drive, Mail Code 0910 University of California La Jolla, CA 92093-0910 innovation@ucsd.edu
+# This software program and documentation are copyrighted by The Regents of the University of California. The software program and documentation are
+# supplied “as is”, without any accompanying services from The Regents. The Regents does not warrant that the operation of the program will
+# be uninterrupted or error-free. The end-user understands that the program was developed for research purposes and is advised not to rely exclusively on the program for any reason.
+#
+# IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL,
+# INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE
+# AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH
+# DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER
+# IS ON AN “AS IS” BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT,
+# UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+################################################################
+## Import libraries
+import os
+import numpy as np
+import xarray as xr
+import dask as da
+import pandas as pd
+## Set the working directory
+workdir='/your_working_directory/'
+os.chdir(workdir)
+#################### Define setup parameters ##################
+dataset='era5'
+folder ='set'
+period_train=np.arange(1979,2015+1)
+vars=['ua500','ua850','ua1000','va500','va850','va1000','z50','z500','z850','z1000','ta500','ta850','hur500','hur850','uas', 'vas', 'tas', 'sp', 'mslp','tcwv']
+###############################################################
+# Merge variables into a single object and save it
+for year in np.arange(1979, 2018+1):
+    grid=[]
+    for var in vars:
+        grid_i=xr.open_dataset('./data/era5/'+var+'/'+year+'.nc',
+                               chunks={'time': 100, 'latitude': 721, 'longitude': 1440})
+        grid.append(grid_i)
+    grid=xr.merge(grid)
+    grid.to_netcdf('/data/era5/'+str(year)+'.nc')
+###############################################################
